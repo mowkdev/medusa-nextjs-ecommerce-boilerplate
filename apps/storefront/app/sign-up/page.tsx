@@ -1,0 +1,47 @@
+import Link from "next/link";
+
+import { Footer } from "@/components/footer";
+import { Header } from "@/components/header";
+import { SignUpForm } from "@/components/sign-up-form";
+
+export const metadata = {
+  title: "Create account — Dabasberns",
+};
+
+export default function SignUpPage() {
+  return (
+    <>
+      <Header solid />
+      <main className="shop" data-screen-label="Create account">
+        <div className="crumb">
+          <Link href="/">Dabasberns</Link>
+          <span className="sep">/</span>
+          <span className="now">Create account</span>
+        </div>
+
+        <div className="auth-shell">
+          <div className="auth-head">
+            <span className="eyebrow">Take a seat</span>
+            <h1>Create account</h1>
+            <p className="sub">
+              Save your bench, follow new batches, and get a heads-up when
+              something quiet ships.
+            </p>
+          </div>
+
+          <SignUpForm />
+
+          <p className="auth-fine">
+            By creating an account you agree to our{" "}
+            <Link href="#">Terms</Link> and <Link href="#">Privacy</Link>.
+          </p>
+
+          <div className="auth-foot">
+            Already have an account? <Link href="/sign-in">Sign in</Link>
+          </div>
+        </div>
+      </main>
+      <Footer />
+    </>
+  );
+}

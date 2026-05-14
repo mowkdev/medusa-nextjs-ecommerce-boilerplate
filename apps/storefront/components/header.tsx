@@ -1,0 +1,175 @@
+"use client";
+
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
+
+import { useCartUi } from "@/components/cart-panel";
+import { useCart } from "@/components/cart-provider";
+import { useMobileMenu } from "@/components/mobile-menu";
+import { ThemeToggle } from "@/components/theme-toggle";
+import { siteConfig } from "@/config/site";
+import { cn } from "@/lib/utils";
+
+function isNavActive(pathname: string, href: string) {
+  if (href === "#") return false;
+  if (href === "/") return pathname === "/";
+  return pathname === href || pathname.startsWith(`${href}/`);
+}
+
+export function Header({ solid = false }: { solid?: boolean }) {
+  const [scrolled, setScrolled] = useState(false);
+  const { open: openCart } = useCartUi();
+  const { itemCount } = useCart();
+  const { open: openMenu } = useMobileMenu();
+  const pathname = usePathname();
+
+  useEffect(() => {
+    if (solid) {
+      setScrolled(true);
+      return;
+    }
+    const update = () => {
+      const heroEl = document.getElementById("parallax-section");
+      if (!heroEl) {
+        setScrolled(window.scrollY > 40);
+        return;
+      }
+      const rect = heroEl.getBoundingClientRect();
+      const total = heroEl.offsetHeight - window.innerHeight;
+      const scrolledPx = Math.min(Math.max(-rect.top, 0), total);
+      setScrolled(scrolledPx >= total - 4);
+    };
+    update();
+    window.addEventListener("scroll", update, { passive: true });
+    window.addEventListener("resize", update);
+    return () => {
+      window.removeEventListener("scroll", update);
+      window.removeEventListener("resize", update);
+    };
+  }, [solid]);
+
+  const showSolid = solid || scrolled;
+
+  return (
+    <nav
+      className={cn(
+        "nav fixed inset-x-0 top-0 z-50 flex items-center justify-between px-[var(--pad)] py-[18px] border-b border-transparent transition-[background-color,color,border-color,backdrop-filter] duration-200",
+        solid ? "text-[var(--ink)]" : "text-[var(--on-sky-fg)]",
+        showSolid &&
+          "bg-[color-mix(in_srgb,var(--paper)_86%,transparent)] backdrop-blur-md text-ink border-b-[color-mix(in_srgb,var(--ink)_8%,transparent)]"
+      )}
+    >
+      <button
+        className="nav-hamburger"
+        type="button"
+        aria-label="Open menu"
+        onClick={openMenu}
+        style={{ color: "inherit" }}
+      >
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth={1.5}
+          strokeLinecap="round"
+        >
+          <path d="M4 7h16M4 12h16M4 17h16" />
+        </svg>
+      </button>
+
+      <Link
+        href="/"
+        className="brand flex items-center no-underline"
+        style={{ color: "inherit" }}
+        aria-label="Dabasberns — home"
+      >
+        <span
+          className="block w-[34px] h-[34px]"
+          role="img"
+          aria-label="Dabasberns"
+          style={{
+            backgroundColor: "currentColor",
+            WebkitMaskImage: "url(/assets/logo-icon.svg)",
+            WebkitMaskSize: "contain",
+            WebkitMaskRepeat: "no-repeat",
+            WebkitMaskPosition: "center",
+            maskImage: "url(/assets/logo-icon.svg)",
+            maskSize: "contain",
+            maskRepeat: "no-repeat",
+            maskPosition: "center",
+          }}
+        />
+      </Link>
+
+      <div className="links hidden md:flex gap-9 text-[14px] tracking-[0.04em] uppercase">
+        {siteConfig.nav.map((item) => {
+          const active = isNavActive(pathname, item.href);
+          return (
+            <Link
+              key={item.label}
+              href={item.href}
+              aria-current={active ? "page" : undefined}
+              className={cn(
+                "transition-opacity no-underline",
+                active ? "opacity-100" : "opacity-85 hover:opacity-100"
+              )}
+              style={{
+                color: "inherit",
+                textDecoration: active ? "underline" : "none",
+                textUnderlineOffset: active ? "6px" : undefined,
+                textDecorationThickness: active ? "1px" : undefined,
+              }}
+            >
+              {item.label}
+            </Link>
+          );
+        })}
+      </div>
+
+      <div className="nav-actions inline-flex items-center gap-2.5">
+        <ThemeToggle />
+        <Link
+          href="/sign-in"
+          className="icon-btn"
+          aria-label="Account"
+          style={{ color: "inherit" }}
+        >
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth={1.5}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <circle cx="12" cy="8" r="3.5" />
+            <path d="M5 20c1.2-3.5 4.1-5.5 7-5.5s5.8 2 7 5.5" />
+          </svg>
+        </Link>
+        <button
+          type="button"
+          className="icon-btn cart-btn"
+          aria-label="Cart"
+          onClick={openCart}
+          style={{ color: "inherit" }}
+        >
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth={1.5}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="M5 7h14l-1.4 11a2 2 0 0 1-2 1.8H8.4a2 2 0 0 1-2-1.8L5 7z" />
+            <path d="M9 7V5.5a3 3 0 0 1 6 0V7" />
+          </svg>
+          {itemCount > 0 && (
+            <span className="badge">{itemCount}</span>
+          )}
+        </button>
+      </div>
+    </nav>
+  );
+}

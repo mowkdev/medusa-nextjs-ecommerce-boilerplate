@@ -1,0 +1,463 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Saulrieta Spinings — Dabasberns</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Tenor+Sans&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="shop.css">
+<script src="shop.js"></script>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav solid" id="nav" data-screen-label="Nav">
+  <button class="nav-hamburger" type="button" aria-label="Open menu" data-open-menu>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+  </button>
+  <a class="brand" href="index.html" aria-label="Dabasberns — home">
+    <span class="logo-mark" role="img" aria-label="Dabasberns"></span>
+  </a>
+  <div class="links">
+    <a href="index.html">Home</a>
+    <a href="category.html" style="opacity:1; text-decoration: underline; text-underline-offset: 6px; text-decoration-thickness: 1px;">Products</a>
+    <a href="#">Journal</a>
+  </div>
+  <div class="nav-actions">
+    <button class="theme-toggle" type="button" aria-label="Toggle day / night">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6l1.4 1.4M17 17l1.4 1.4M5.6 18.4 7 17M17 7l1.4-1.4"/></svg>
+    </button>
+    <button class="icon-btn" type="button" aria-label="Account">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c1.2-3.5 4.1-5.5 7-5.5s5.8 2 7 5.5"/></svg>
+    </button>
+    <button class="icon-btn cart-btn" type="button" aria-label="Cart" data-open-cart>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 7h14l-1.4 11a2 2 0 0 1-2 1.8H8.4a2 2 0 0 1-2-1.8L5 7z"/><path d="M9 7V5.5a3 3 0 0 1 6 0V7"/></svg>
+      <span class="badge">2</span>
+    </button>
+  </div>
+</nav>
+
+<main class="shop" data-screen-label="Product — Saulrieta Spinings">
+
+  <!-- BREADCRUMB -->
+  <div class="crumb">
+    <a href="index.html">Dabasberns</a>
+    <span class="sep">/</span>
+    <a href="category.html">Rods</a>
+    <span class="sep">/</span>
+    <span class="now">Saulrieta Spinings · 9' 5wt</span>
+  </div>
+
+  <div class="pdp">
+
+    <!-- ============ TOP: gallery + detail ============ -->
+    <div class="pdp-main">
+
+      <!-- GALLERY -->
+      <div class="gallery">
+        <div class="hero-img">
+          <div class="ph"></div>
+          <span class="corner">No. 04 / 12 — ’25 batch</span>
+          <span class="ph-label">SAULRIETA SPININGS · FULL VIEW</span>
+        </div>
+        <div class="thumbs">
+          <button class="thumb on" aria-label="Full rod">
+            <span class="ph"></span>
+            <span class="lbl">Full</span>
+          </button>
+          <button class="thumb" aria-label="Grip detail">
+            <span class="ph"></span>
+            <span class="lbl">Grip</span>
+          </button>
+          <button class="thumb" aria-label="Wrap detail">
+            <span class="ph"></span>
+            <span class="lbl">Wrap</span>
+          </button>
+          <button class="thumb" aria-label="On the bench">
+            <span class="ph"></span>
+            <span class="lbl">Bench</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- DETAIL -->
+      <div class="detail">
+        <span class="eyebrow">No. 04 — new batch · cast Apr ’26</span>
+        <h1>Saulrieta<br>Spinings</h1>
+        <span class="sku">SKU · SAU-04 · 9' · 5wt · 4-piece</span>
+
+        <div class="price-row">
+          <span class="price">€189</span>
+          <span class="ship"><span class="dot"></span>In stock · ships Tue Apr 28</span>
+        </div>
+
+        <p class="lede">
+          A nine-foot, five-weight made for the long, slow evenings on a Kurzeme lake.
+          Medium action, soft tip, enough backbone for a quiet wind off the trees.
+          <em>Wrapped, cast and signed by hand.</em>
+        </p>
+
+        <!-- LENGTH / WEIGHT -->
+        <div class="opt">
+          <div class="head">
+            <span class="lbl">Length × Weight</span>
+            <span class="val">9' · 5wt</span>
+          </div>
+          <div class="opt-row">
+            <button class="pick">8' · 4wt</button>
+            <button class="pick">8'6" · 4wt</button>
+            <button class="pick on">9' · 5wt</button>
+            <button class="pick">9' · 6wt</button>
+            <button class="pick dim">9'6" · 7wt</button>
+          </div>
+        </div>
+
+        <!-- WRAP COLOUR -->
+        <div class="opt">
+          <div class="head">
+            <span class="lbl">Wrap colour</span>
+            <span class="val">Cedar</span>
+          </div>
+          <div class="opt-row swatches">
+            <button class="csw on" data-val="cedar">
+              <span class="dot" style="background:#a06438;"></span>
+              <span class="name">Cedar</span>
+            </button>
+            <button class="csw" data-val="ink">
+              <span class="dot" style="background:#0c1a26;"></span>
+              <span class="name">Ink</span>
+            </button>
+            <button class="csw" data-val="slate">
+              <span class="dot" style="background:#6a7b89;"></span>
+              <span class="name">Slate</span>
+            </button>
+            <button class="csw" data-val="moss">
+              <span class="dot" style="background:#5a6f4a;"></span>
+              <span class="name">Moss</span>
+            </button>
+            <button class="csw" data-val="bone">
+              <span class="dot" style="background:#e4dccb;"></span>
+              <span class="name">Bone</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- REEL SEAT -->
+        <div class="opt">
+          <div class="head">
+            <span class="lbl">Reel seat</span>
+            <span class="val">Walnut · uplocking</span>
+          </div>
+          <div class="opt-row">
+            <button class="pick on">Walnut</button>
+            <button class="pick">Birch</button>
+            <button class="pick">Cork</button>
+            <button class="pick">Nickel silver +€24</button>
+          </div>
+        </div>
+
+        <!-- BUY -->
+        <div class="buy">
+          <div class="qty">
+            <button type="button" aria-label="Decrease">−</button>
+            <span class="val" id="qty">1</span>
+            <button type="button" aria-label="Increase">+</button>
+          </div>
+          <button class="add" type="button">
+            <span>Add to bench</span>
+            <span class="price-mini">€189</span>
+          </button>
+        </div>
+
+        <div class="bench-note">
+          <span class="mark">From the bench</span>
+          <div>This is the last of four 5-weights in the spring batch. We cast each one off the dock before it ships — you'll find a small initial mark under the cork. Engraving available at checkout.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ SPECS ============ -->
+    <section class="specs-section">
+      <div class="specs-head">
+        <h3>The bench card</h3>
+        <p>Every rod that leaves the workshop ships with a hand-written bench card — the same numbers we pencil in while we tune the blank. These are the ones we've kept on this rod.</p>
+      </div>
+      <div class="specs">
+        <div>
+          <div class="k">Length</div>
+          <div class="v">9'<small>2.74 m</small></div>
+        </div>
+        <div>
+          <div class="k">Line weight</div>
+          <div class="v">5wt<small>WF or DT</small></div>
+        </div>
+        <div>
+          <div class="k">Pieces</div>
+          <div class="v">4<small>Travel tube · 76 cm</small></div>
+        </div>
+        <div>
+          <div class="k">Action</div>
+          <div class="v">Medium<small>Soft tip · 60/40 flex</small></div>
+        </div>
+        <div>
+          <div class="k">Blank</div>
+          <div class="v">Graphite<small>IM8 · matte tonkin wrap</small></div>
+        </div>
+        <div>
+          <div class="k">Reel seat</div>
+          <div class="v">Walnut<small>Uplocking · brass band</small></div>
+        </div>
+        <div>
+          <div class="k">Grip</div>
+          <div class="v">Cork<small>Portuguese · half-wells</small></div>
+        </div>
+        <div>
+          <div class="k">Weight</div>
+          <div class="v">89 g<small>Strung &amp; balanced</small></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ PAIRS WITH ============ -->
+    <section class="pairs">
+      <h3>Pairs nicely with</h3>
+      <div class="row">
+
+        <a class="product" href="product.html">
+          <div class="frame">
+            <div class="ph"></div>
+            <span class="ph-label">EZERA · SPOLE 04</span>
+          </div>
+          <div class="meta"><span class="name">Ezera Spole</span><span class="price">€145</span></div>
+          <span class="cat">Reel · 4/5wt · Machined alu</span>
+        </a>
+
+        <a class="product" href="product.html">
+          <div class="frame">
+            <div class="ph"></div>
+            <span class="ph-label">VAKARA AUKLA · WF5F</span>
+          </div>
+          <div class="meta"><span class="name">Vakara Aukla</span><span class="price">€28</span></div>
+          <span class="cat">Fly line · WF5F · 30m</span>
+        </a>
+
+        <a class="product" href="product.html">
+          <div class="frame">
+            <div class="ph"></div>
+            <span class="ph-label">LAPSENES MUŠIŅA · #14</span>
+          </div>
+          <div class="meta"><span class="name">Lapsenes Mušiņa</span><span class="price">€4.50</span></div>
+          <span class="cat">Dry fly · Tied to order</span>
+        </a>
+
+        <a class="product" href="product.html">
+          <div class="frame">
+            <div class="ph"></div>
+            <span class="ph-label">ROZA HOOK CASE</span>
+          </div>
+          <div class="meta"><span class="name">Roza Box</span><span class="price">€34</span></div>
+          <span class="cat">Tackle · Linden wood</span>
+        </a>
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<!-- FOOTER -->
+<footer class="footer" data-screen-label="Footer">
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="brand-block">
+        <div class="mark"><span class="logo-mark" role="img" aria-label="Dabasberns"></span></div>
+        <p>Hand-built rods and quiet gear from a workshop on the Kurzeme coast. Shipped Tuesdays.</p>
+        <form class="newsletter" onsubmit="event.preventDefault(); this.querySelector('button').textContent='Thank you →';">
+          <input type="email" placeholder="your email">
+          <button type="submit">Join →</button>
+        </form>
+      </div>
+      <div class="col">
+        <h4>Shop</h4>
+        <ul>
+          <li><a href="category.html">Rods</a></li>
+          <li><a href="#">Reels &amp; Lines</a></li>
+          <li><a href="#">Flies &amp; Lures</a></li>
+          <li><a href="#">Accessories</a></li>
+          <li><a href="#">Gift card</a></li>
+        </ul>
+      </div>
+      <div class="col">
+        <h4>Workshop</h4>
+        <ul>
+          <li><a href="#">Our story</a></li>
+          <li><a href="#">Custom builds</a></li>
+          <li><a href="#">Repairs</a></li>
+          <li><a href="#">Journal</a></li>
+        </ul>
+      </div>
+      <div class="col">
+        <h4>Help</h4>
+        <ul>
+          <li><a href="#">Shipping</a></li>
+          <li><a href="#">Returns</a></li>
+          <li><a href="#">Contact</a></li>
+          <li><a href="#">Instagram</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bot">
+      <div>© 2026 Dabasberns SIA · Kuldīga, Latvia</div>
+      <div class="links">
+        <a href="#">Privacy</a>
+        <a href="#">Terms</a>
+        <a href="#">Imprint</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+// Option pickers
+document.querySelectorAll('.opt-row').forEach(row => {
+  row.querySelectorAll('.pick, .csw').forEach(btn => {
+    btn.addEventListener('click', () => {
+      if (btn.classList.contains('dim')) return;
+      row.querySelectorAll('.pick, .csw').forEach(b => b.classList.remove('on'));
+      btn.classList.add('on');
+      // sync 'val' label
+      const head = row.previousElementSibling;
+      if (head && head.classList.contains('head')) {
+        const valEl = head.querySelector('.val');
+        const lbl = btn.querySelector('.name')?.textContent || btn.textContent.trim();
+        if (valEl) valEl.textContent = lbl;
+      }
+    });
+  });
+});
+
+// Thumb swap
+document.querySelectorAll('.gallery .thumbs .thumb').forEach(t => {
+  t.addEventListener('click', () => {
+    document.querySelectorAll('.gallery .thumbs .thumb').forEach(x => x.classList.remove('on'));
+    t.classList.add('on');
+    document.querySelector('.hero-img .ph-label').textContent =
+      'SAULRIETA SPININGS · ' + t.querySelector('.lbl').textContent.toUpperCase() + ' VIEW';
+  });
+});
+
+// Qty
+const qtyEl = document.getElementById('qty');
+document.querySelectorAll('.qty button').forEach((b, i) => {
+  b.addEventListener('click', () => {
+    let v = parseInt(qtyEl.textContent, 10) || 1;
+    v = i === 0 ? Math.max(1, v - 1) : Math.min(9, v + 1);
+    qtyEl.textContent = v;
+    document.querySelector('.add .price-mini').textContent = '€' + (189 * v);
+  });
+});
+</script>
+
+<!-- MOBILE MENU PANEL -->
+<div class="menu-overlay" id="menu-overlay"></div>
+<aside class="menu-panel" id="menu-panel" aria-hidden="true" aria-label="Menu">
+  <div class="menu-head">
+    <span class="logo-mark" role="img" aria-label="Dabasberns"></span>
+    <button class="close" type="button" data-close-menu aria-label="Close menu">×</button>
+  </div>
+  <div class="menu-body">
+    <nav class="menu-primary" aria-label="Primary">
+      <a href="index.html">Home</a>
+      <a href="category.html" class="current">Products</a>
+      <a href="#">Journal</a>
+    </nav>
+    <div class="menu-section">
+      <h4>Shop by</h4>
+      <ul class="menu-list">
+        <li><a href="category.html">Rods <span class="n">14</span></a></li>
+        <li><a href="#">Reels &amp; Lines <span class="n">09</span></a></li>
+        <li><a href="#">Flies &amp; Lures <span class="n">42</span></a></li>
+        <li><a href="#">Accessories <span class="n">11</span></a></li>
+        <li><a href="#" style="color:var(--accent-deep);">Sale <span class="n">03</span></a></li>
+      </ul>
+    </div>
+    <div class="menu-section">
+      <h4>Workshop</h4>
+      <ul class="menu-list">
+        <li><a href="#">Custom builds</a></li>
+        <li><a href="#">Repairs</a></li>
+        <li><a href="#">Our story</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="menu-foot">
+    <a href="#">Sign in</a>
+    <span class="sep">·</span>
+    <a href="#">Contact</a>
+    <span class="sep">·</span>
+    <a href="#">Instagram</a>
+  </div>
+</aside>
+
+<!-- CART SIDE PANEL -->
+<div class="cart-overlay" id="cart-overlay"></div>
+<aside class="cart-panel" id="cart-panel" aria-hidden="true" aria-label="Cart">
+  <div class="cart-head">
+    <h2>Your bench <span class="cnt">2 items</span></h2>
+    <button class="close" type="button" data-close-cart aria-label="Close cart">×</button>
+  </div>
+  <div class="cart-items">
+    <div class="cart-item">
+      <div class="thumb"><div class="ph"></div><span class="lbl">SAU·04</span></div>
+      <div class="info">
+        <div class="row">
+          <span class="name">Saulrieta Spinings</span>
+          <span class="price" data-unit="189">€189</span>
+        </div>
+        <div class="meta">9' · 5wt · Cedar · Walnut seat</div>
+        <div class="row">
+          <div class="qty-mini">
+            <button type="button" aria-label="Decrease">−</button>
+            <span class="v">1</span>
+            <button type="button" aria-label="Increase">+</button>
+          </div>
+          <button class="rm" type="button">Remove</button>
+        </div>
+      </div>
+    </div>
+    <div class="cart-item">
+      <div class="thumb"><div class="ph"></div><span class="lbl">VAK·5F</span></div>
+      <div class="info">
+        <div class="row">
+          <span class="name">Vakara Aukla</span>
+          <span class="price" data-unit="28">€28</span>
+        </div>
+        <div class="meta">Fly line · WF5F · 30m</div>
+        <div class="row">
+          <div class="qty-mini">
+            <button type="button" aria-label="Decrease">−</button>
+            <span class="v">1</span>
+            <button type="button" aria-label="Increase">+</button>
+          </div>
+          <button class="rm" type="button">Remove</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="cart-totals">
+    <div class="row"><span class="k">Shipping</span><span class="v">Calculated next</span></div>
+    <div class="row subtotal"><span class="k">Subtotal</span><span class="v">€217</span></div>
+    <p class="ship-note">Ships Tuesday May 19 from Kuldīga, Latvia. Tracked, signed for.</p>
+    <button class="checkout" type="button">
+      <span>Go to checkout</span>
+      <span>→</span>
+    </button>
+    <a class="cont" href="category.html" data-close-cart>Continue browsing</a>
+  </div>
+</aside>
+
+</body>
+</html>
