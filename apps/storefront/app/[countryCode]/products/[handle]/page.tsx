@@ -1,4 +1,4 @@
-import Link from "next/link";
+import LocalizedLink from "@/components/localized-link";
 import { notFound } from "next/navigation";
 import { HttpTypes } from "@medusajs/types";
 
@@ -9,10 +9,14 @@ import { getProductByHandle, listProducts } from "@/lib/data/products";
 import { getCheapestProductPrice } from "@/lib/prices";
 
 async function getRelatedProducts(
-  currentId: string
+  currentId: string,
+  countryCode: string
 ): Promise<HttpTypes.StoreProduct[]> {
   try {
-    const { products } = await listProducts({ limit: 5 });
+    const { products } = await listProducts({
+      countryCode,
+      query: { limit: 5 },
+    });
     return products.filter((p) => p.id !== currentId).slice(0, 4);
   } catch {
     return [];
@@ -24,19 +28,19 @@ export const dynamic = "force-dynamic";
 export default async function ProductPage({
   params,
 }: {
-  params: Promise<{ handle: string }>;
+  params: Promise<{ handle: string; countryCode: string }>;
 }) {
-  const { handle } = await params;
+  const { handle, countryCode } = await params;
 
   let product: HttpTypes.StoreProduct | null = null;
   try {
-    product = await getProductByHandle(handle);
+    product = await getProductByHandle(handle, countryCode);
   } catch {
     // Medusa backend unavailable
   }
   if (!product) return notFound();
 
-  const related = await getRelatedProducts(product.id);
+  const related = await getRelatedProducts(product.id, countryCode);
   const metaRecord = product.metadata as Record<string, any> | null;
   const specs: { k: string; v: string; small: string }[] =
     metaRecord?.specs ?? [];
@@ -46,9 +50,9 @@ export default async function ProductPage({
       <Header solid />
       <main className="shop" data-screen-label={`Product — ${product.title}`}>
         <div className="crumb">
-          <Link href="/">Dabasberns</Link>
+          <LocalizedLink href="/">Dabasberns</LocalizedLink>
           <span className="sep">/</span>
-          <Link href="/products">Products</Link>
+          <LocalizedLink href="/products">Products</LocalizedLink>
           <span className="sep">/</span>
           <span className="now">{product.title}</span>
         </div>
@@ -87,7 +91,7 @@ export default async function ProductPage({
                 {related.map((p) => {
                   const price = getCheapestProductPrice(p);
                   return (
-                    <Link
+                    <LocalizedLink
                       key={p.id}
                       className="product"
                       href={`/products/${p.handle}`}
@@ -122,7 +126,7 @@ export default async function ProductPage({
                           p.categories?.[0]?.name ??
                           ""}
                       </span>
-                    </Link>
+                    </LocalizedLink>
                   );
                 })}
               </div>

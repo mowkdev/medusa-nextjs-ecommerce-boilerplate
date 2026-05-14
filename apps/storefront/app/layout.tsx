@@ -3,8 +3,6 @@ import { Inter, Tenor_Sans } from "next/font/google";
 
 import "./globals.css";
 
-import { CartUiProvider } from "@/components/cart-panel";
-import { CartProvider } from "@/components/cart-provider";
 import { MobileMenuProvider } from "@/components/mobile-menu";
 import { ThemeProvider, themeNoFlashScript } from "@/components/theme-provider";
 import { SmoothScrollProvider } from "@/components/smooth-scroll";
@@ -63,11 +61,7 @@ export default function RootLayout({
       <body>
         <ThemeProvider>
           <MobileMenuProvider>
-            <CartProvider>
-              <CartUiProvider>
-                <SmoothScrollProvider>{children}</SmoothScrollProvider>
-              </CartUiProvider>
-            </CartProvider>
+            <SmoothScrollProvider>{children}</SmoothScrollProvider>
           </MobileMenuProvider>
         </ThemeProvider>
       </body>

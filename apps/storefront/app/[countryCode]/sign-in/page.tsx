@@ -1,4 +1,4 @@
-import Link from "next/link";
+import LocalizedLink from "@/components/localized-link";
 
 import { Footer } from "@/components/footer";
 import { Header } from "@/components/header";
@@ -14,7 +14,7 @@ export default function SignInPage() {
       <Header solid />
       <main className="shop" data-screen-label="Sign in">
         <div className="crumb">
-          <Link href="/">Dabasberns</Link>
+          <LocalizedLink href="/">Dabasberns</LocalizedLink>
           <span className="sep">/</span>
           <span className="now">Sign in</span>
         </div>
@@ -32,7 +32,7 @@ export default function SignInPage() {
 
           <div className="auth-foot">
             New to Dabasberns?{" "}
-            <Link href="/sign-up">Create an account</Link>
+            <LocalizedLink href="/sign-up">Create an account</LocalizedLink>
           </div>
         </div>
       </main>

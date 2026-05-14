@@ -25,6 +25,7 @@ type CartContextValue = {
   itemCount: number;
   subtotal: string;
   currencyCode: string;
+  countryCode: string;
   addItem: (variantId: string, quantity: number) => Promise<void>;
   updateItem: (lineItemId: string, quantity: number) => Promise<void>;
   removeItem: (lineItemId: string) => Promise<void>;
@@ -33,21 +34,29 @@ type CartContextValue = {
 
 const CartContext = createContext<CartContextValue | null>(null);
 
-export function CartProvider({ children }: { children: React.ReactNode }) {
+export function CartProvider({
+  children,
+  regionId,
+  countryCode,
+}: {
+  children: React.ReactNode;
+  regionId: string;
+  countryCode: string;
+}) {
   const [cart, setCart] = useState<HttpTypes.StoreCart | null>(null);
   const [loading, setLoading] = useState(true);
   const [adding, setAdding] = useState(false);
 
   const refreshCart = useCallback(async () => {
     try {
-      const c = await getOrCreateCart();
+      const c = await getOrCreateCart(regionId);
       setCart(c);
     } catch (err) {
       console.error("Failed to load cart:", err);
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [regionId]);
 
   useEffect(() => {
     refreshCart();
@@ -117,6 +126,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       itemCount,
       subtotal,
       currencyCode,
+      countryCode,
       addItem,
       updateItem,
       removeItem,
@@ -129,6 +139,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       itemCount,
       subtotal,
       currencyCode,
+      countryCode,
       addItem,
       updateItem,
       removeItem,

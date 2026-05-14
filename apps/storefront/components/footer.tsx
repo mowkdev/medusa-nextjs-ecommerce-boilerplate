@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import LocalizedLink from "@/components/localized-link";
 import { useState } from "react";
 
 import { siteConfig } from "@/config/site";
@@ -63,12 +63,12 @@ export function Footer() {
               <ul className="list-none p-0 m-0 flex flex-col gap-3.5">
                 {col.links.map((link) => (
                   <li key={link.label}>
-                    <Link
+                    <LocalizedLink
                       href={link.href}
                       className="text-[var(--footer-fg)] no-underline text-[15px] opacity-90 transition-opacity hover:text-accent hover:opacity-100"
                     >
                       {link.label}
-                    </Link>
+                    </LocalizedLink>
                   </li>
                 ))}
               </ul>
@@ -80,14 +80,14 @@ export function Footer() {
           <div>{siteConfig.footer.copyright}</div>
           <div className="flex gap-6">
             {siteConfig.footer.legal.map((link) => (
-              <Link
+              <LocalizedLink
                 key={link.label}
                 href={link.href}
                 className="no-underline"
                 style={{ color: "inherit" }}
               >
                 {link.label}
-              </Link>
+              </LocalizedLink>
             ))}
           </div>
         </div>

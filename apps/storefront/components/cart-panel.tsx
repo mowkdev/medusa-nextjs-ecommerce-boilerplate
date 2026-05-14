@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import LocalizedLink from "@/components/localized-link";
 import {
   createContext,
   useCallback,
@@ -127,7 +127,7 @@ function CartPanel() {
 
             return (
               <div key={item.id} className="cart-item">
-                <Link
+                <LocalizedLink
                   href={`/products/${handle}`}
                   onClick={close}
                   className="thumb"
@@ -147,17 +147,17 @@ function CartPanel() {
                     <div className="ph" />
                   )}
                   <span className="lbl">{item.variant_sku ?? ""}</span>
-                </Link>
+                </LocalizedLink>
                 <div className="info">
                   <div className="row">
-                    <Link
+                    <LocalizedLink
                       href={`/products/${handle}`}
                       onClick={close}
                       className="name"
                       style={{ textDecoration: "none", color: "inherit" }}
                     >
                       {title}
-                    </Link>
+                    </LocalizedLink>
                     <span className="price">{unitPriceFormatted}</span>
                   </div>
                   {item.variant_title &&

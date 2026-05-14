@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import LocalizedLink from "@/components/localized-link";
 import { usePathname } from "next/navigation";
 import {
   createContext,
@@ -128,7 +128,7 @@ function MobileMenuPanel() {
             {PRIMARY_NAV.map((item) => {
               const active = isNavActive(pathname, item.href);
               return (
-                <Link
+                <LocalizedLink
                   key={item.label}
                   href={item.href}
                   aria-current={active ? "page" : undefined}
@@ -136,7 +136,7 @@ function MobileMenuPanel() {
                   onClick={close}
                 >
                   {item.label}
-                </Link>
+                </LocalizedLink>
               );
             })}
           </nav>
@@ -146,7 +146,7 @@ function MobileMenuPanel() {
             <ul className="menu-list">
               {SHOP_BY.map((item) => (
                 <li key={item.label}>
-                  <Link
+                  <LocalizedLink
                     href={item.href}
                     onClick={close}
                     style={
@@ -156,7 +156,7 @@ function MobileMenuPanel() {
                     }
                   >
                     {item.label} <span className="n">{item.count}</span>
-                  </Link>
+                  </LocalizedLink>
                 </li>
               ))}
             </ul>
@@ -167,9 +167,9 @@ function MobileMenuPanel() {
             <ul className="menu-list">
               {WORKSHOP.map((item) => (
                 <li key={item.label}>
-                  <Link href={item.href} onClick={close}>
+                  <LocalizedLink href={item.href} onClick={close}>
                     {item.label}
-                  </Link>
+                  </LocalizedLink>
                 </li>
               ))}
             </ul>
@@ -179,9 +179,9 @@ function MobileMenuPanel() {
         <div className="menu-foot">
           {FOOT.map((item, i) => (
             <Fragment key={item.label}>
-              <Link href={item.href} onClick={close}>
+              <LocalizedLink href={item.href} onClick={close}>
                 {item.label}
-              </Link>
+              </LocalizedLink>
               {i < FOOT.length - 1 && <span className="sep">·</span>}
             </Fragment>
           ))}

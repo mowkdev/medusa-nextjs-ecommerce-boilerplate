@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import LocalizedLink from "@/components/localized-link";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { HttpTypes } from "@medusajs/types";
@@ -110,7 +110,7 @@ export function FeaturedProducts({
               ?.tag_variant;
 
             return (
-              <Link
+              <LocalizedLink
                 key={p.id}
                 href={`/products/${p.handle}`}
                 className="group no-underline text-inherit flex flex-col gap-3.5 cursor-pointer shrink-0 basis-[78%] min-w-[260px] sm:basis-[calc((100%-28px)/2)] lg:basis-[calc((100%-28px*2)/3)] xl:basis-[calc((100%-28px*3)/4)]"
@@ -170,7 +170,7 @@ export function FeaturedProducts({
                     p.categories?.[0]?.name ??
                     ""}
                 </span>
-              </Link>
+              </LocalizedLink>
             );
           })}
         </div>

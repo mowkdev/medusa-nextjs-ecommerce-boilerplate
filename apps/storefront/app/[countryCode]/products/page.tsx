@@ -1,4 +1,4 @@
-import Link from "next/link";
+import LocalizedLink from "@/components/localized-link";
 import { HttpTypes } from "@medusajs/types";
 
 import {
@@ -26,12 +26,20 @@ function extractSwatchColors(product: HttpTypes.StoreProduct): string[] {
 
 export const dynamic = "force-dynamic";
 
-export default async function CategoryPage() {
+export default async function CategoryPage({
+  params,
+}: {
+  params: Promise<{ countryCode: string }>;
+}) {
+  const { countryCode } = await params;
   let products: HttpTypes.StoreProduct[] = [];
   let count = 0;
 
   try {
-    const result = await listProducts({ limit: 20 });
+    const result = await listProducts({
+      countryCode,
+      query: { limit: 20 },
+    });
     products = result.products;
     count = result.count;
   } catch {
@@ -43,9 +51,9 @@ export default async function CategoryPage() {
       <Header solid />
       <main className="shop" data-screen-label="Category — Products">
         <div className="crumb">
-          <Link href="/">Dabasberns</Link>
+          <LocalizedLink href="/">Dabasberns</LocalizedLink>
           <span className="sep">/</span>
-          <Link href="#">Shop</Link>
+          <LocalizedLink href="#">Shop</LocalizedLink>
           <span className="sep">/</span>
           <span className="now">All products</span>
         </div>
@@ -81,7 +89,7 @@ export default async function CategoryPage() {
                 const swatches = extractSwatchColors(p);
 
                 return (
-                  <Link
+                  <LocalizedLink
                     key={p.id}
                     className="product"
                     href={`/products/${p.handle}`}
@@ -135,7 +143,7 @@ export default async function CategoryPage() {
                         ))}
                       </div>
                     )}
-                  </Link>
+                  </LocalizedLink>
                 );
               })}
             </div>
@@ -156,11 +164,11 @@ export default async function CategoryPage() {
                   <path d="M10 3L5 8l5 5" />
                 </svg>
               </button>
-              <Link className="now" href="#">
+              <LocalizedLink className="now" href="#">
                 01
-              </Link>
-              <Link href="#">02</Link>
-              <Link className="nav-btn" href="#" aria-label="Next">
+              </LocalizedLink>
+              <LocalizedLink href="#">02</LocalizedLink>
+              <LocalizedLink className="nav-btn" href="#" aria-label="Next">
                 <svg
                   viewBox="0 0 16 16"
                   fill="none"
@@ -169,7 +177,7 @@ export default async function CategoryPage() {
                 >
                   <path d="M6 3l5 5-5 5" />
                 </svg>
-              </Link>
+              </LocalizedLink>
             </nav>
           </section>
         </div>

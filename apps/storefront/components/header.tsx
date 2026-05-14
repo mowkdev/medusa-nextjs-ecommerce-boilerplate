@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import LocalizedLink from "@/components/localized-link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -78,7 +78,7 @@ export function Header({ solid = false }: { solid?: boolean }) {
         </svg>
       </button>
 
-      <Link
+      <LocalizedLink
         href="/"
         className="brand flex items-center no-underline"
         style={{ color: "inherit" }}
@@ -100,13 +100,13 @@ export function Header({ solid = false }: { solid?: boolean }) {
             maskPosition: "center",
           }}
         />
-      </Link>
+      </LocalizedLink>
 
       <div className="links hidden md:flex gap-9 text-[14px] tracking-[0.04em] uppercase">
         {siteConfig.nav.map((item) => {
           const active = isNavActive(pathname, item.href);
           return (
-            <Link
+            <LocalizedLink
               key={item.label}
               href={item.href}
               aria-current={active ? "page" : undefined}
@@ -122,14 +122,14 @@ export function Header({ solid = false }: { solid?: boolean }) {
               }}
             >
               {item.label}
-            </Link>
+            </LocalizedLink>
           );
         })}
       </div>
 
       <div className="nav-actions inline-flex items-center gap-2.5">
         <ThemeToggle />
-        <Link
+        <LocalizedLink
           href="/sign-in"
           className="icon-btn"
           aria-label="Account"
@@ -146,7 +146,7 @@ export function Header({ solid = false }: { solid?: boolean }) {
             <circle cx="12" cy="8" r="3.5" />
             <path d="M5 20c1.2-3.5 4.1-5.5 7-5.5s5.8 2 7 5.5" />
           </svg>
-        </Link>
+        </LocalizedLink>
         <button
           type="button"
           className="icon-btn cart-btn"

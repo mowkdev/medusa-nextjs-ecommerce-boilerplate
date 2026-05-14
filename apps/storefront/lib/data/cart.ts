@@ -13,25 +13,36 @@ function setCartId(id: string) {
   localStorage.setItem(CART_ID_KEY, id);
 }
 
-async function retrieveCart(
-  cartId: string
-): Promise<HttpTypes.StoreCart> {
+function clearCartId() {
+  if (typeof window === "undefined") return;
+  localStorage.removeItem(CART_ID_KEY);
+}
+
+async function retrieveCart(cartId: string): Promise<HttpTypes.StoreCart> {
   const { cart } = await sdk.store.cart.retrieve(cartId);
   return cart as HttpTypes.StoreCart;
 }
 
-export async function getOrCreateCart(): Promise<HttpTypes.StoreCart> {
+export async function getOrCreateCart(
+  regionId: string
+): Promise<HttpTypes.StoreCart> {
   const existing = getCartId();
 
   if (existing) {
     try {
-      return await retrieveCart(existing);
+      const cart = await retrieveCart(existing);
+      // If the cart's region drifted from the active region, abandon it and create a fresh one.
+      if (cart.region_id && cart.region_id !== regionId) {
+        clearCartId();
+      } else {
+        return cart;
+      }
     } catch {
-      // cart expired or deleted — fall through to create
+      clearCartId();
     }
   }
 
-  const { cart } = await sdk.store.cart.create({});
+  const { cart } = await sdk.store.cart.create({ region_id: regionId });
   setCartId(cart.id);
   return cart as HttpTypes.StoreCart;
 }
