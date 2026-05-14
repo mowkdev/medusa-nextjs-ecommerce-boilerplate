@@ -2,7 +2,7 @@
 
 import { HttpTypes } from "@medusajs/types";
 import { sdk } from "@/lib/medusa";
-import { getAuthHeaders, getCacheOptions } from "./cookies";
+import { getAuthHeaders, getCacheOptions, STORE_CACHE } from "./cookies";
 import { getRegion, retrieveRegion } from "./regions";
 
 const PRODUCT_FIELDS =
@@ -70,7 +70,7 @@ export async function listProducts({
     },
     headers,
     next,
-    cache: "force-cache",
+    cache: STORE_CACHE,
   });
 
   return {

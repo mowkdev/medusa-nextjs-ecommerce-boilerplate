@@ -1,6 +1,7 @@
 "use client";
 
 import LocalizedLink from "@/components/localized-link";
+import { useRouter } from "next/navigation";
 import {
   createContext,
   useCallback,
@@ -60,6 +61,7 @@ export function useCartUi(): CartUiContextValue {
 }
 
 function CartPanel() {
+  const router = useRouter();
   const { isOpen, close } = useCartUi();
   const {
     cart,
@@ -67,11 +69,16 @@ function CartPanel() {
     itemCount,
     subtotal,
     currencyCode,
+    countryCode,
     updateItem,
     removeItem,
   } = useCart();
 
   const items = cart?.items ?? [];
+  const goToCheckout = () => {
+    close();
+    router.push(`/${countryCode}/cart`);
+  };
 
   return (
     <>
@@ -216,7 +223,12 @@ function CartPanel() {
           <p className="ship-note">
             Ships Tuesday from Kuldīga, Latvia. Tracked, signed for.
           </p>
-          <button className="checkout" type="button">
+          <button
+            className="checkout"
+            type="button"
+            onClick={goToCheckout}
+            disabled={items.length === 0}
+          >
             <span>Go to checkout</span>
             <span>→</span>
           </button>

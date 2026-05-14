@@ -10,7 +10,7 @@ export const siteConfig = {
   },
   nav: [
     { label: "Home", href: "/" },
-    { label: "Products", href: "/products" },
+    { label: "Shop", href: "/shop" },
     { label: "Journal", href: "#" },
   ],
   cart: { count: 2 },

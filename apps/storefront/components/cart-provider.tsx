@@ -4,17 +4,17 @@ import {
   createContext,
   useCallback,
   useContext,
-  useEffect,
   useMemo,
   useState,
+  useTransition,
 } from "react";
 import { HttpTypes } from "@medusajs/types";
 
 import {
-  getOrCreateCart,
-  addToCart as addToCartApi,
-  updateLineItem as updateLineItemApi,
-  removeLineItem as removeLineItemApi,
+  addToCart as addToCartAction,
+  deleteLineItem as deleteLineItemAction,
+  retrieveCart,
+  updateLineItem as updateLineItemAction,
 } from "@/lib/data/cart";
 import { formatPrice } from "@/lib/prices";
 
@@ -36,70 +36,71 @@ const CartContext = createContext<CartContextValue | null>(null);
 
 export function CartProvider({
   children,
-  regionId,
+  initialCart,
   countryCode,
 }: {
   children: React.ReactNode;
-  regionId: string;
+  initialCart: HttpTypes.StoreCart | null;
   countryCode: string;
 }) {
-  const [cart, setCart] = useState<HttpTypes.StoreCart | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [cart, setCart] = useState<HttpTypes.StoreCart | null>(initialCart);
   const [adding, setAdding] = useState(false);
+  const [, startTransition] = useTransition();
 
   const refreshCart = useCallback(async () => {
-    try {
-      const c = await getOrCreateCart(regionId);
-      setCart(c);
-    } catch (err) {
-      console.error("Failed to load cart:", err);
-    } finally {
-      setLoading(false);
-    }
-  }, [regionId]);
-
-  useEffect(() => {
-    refreshCart();
-  }, [refreshCart]);
+    const next = await retrieveCart();
+    setCart(next);
+  }, []);
 
   const addItem = useCallback(
     async (variantId: string, quantity: number) => {
-      if (!cart) return;
       setAdding(true);
       try {
-        const updated = await addToCartApi(cart.id, variantId, quantity);
-        setCart(updated);
+        await addToCartAction({ variantId, quantity, countryCode });
+        await refreshCart();
       } finally {
         setAdding(false);
       }
     },
-    [cart]
+    [countryCode, refreshCart]
   );
 
   const updateItem = useCallback(
     async (lineItemId: string, quantity: number) => {
-      if (!cart) return;
-      try {
-        const updated = await updateLineItemApi(cart.id, lineItemId, quantity);
-        setCart(updated);
-      } catch (err) {
-        console.error("Failed to update item:", err);
-      }
+      // Optimistic update on quantity
+      setCart((prev) => {
+        if (!prev) return prev;
+        return {
+          ...prev,
+          items: (prev.items ?? []).map((it) =>
+            it.id === lineItemId ? { ...it, quantity } : it
+          ),
+        } as HttpTypes.StoreCart;
+      });
+      startTransition(async () => {
+        await updateLineItemAction({ lineId: lineItemId, quantity });
+        await refreshCart();
+      });
     },
-    [cart]
+    [refreshCart]
   );
 
   const removeItem = useCallback(
     async (lineItemId: string) => {
-      if (!cart) return;
-      try {
-        const updated = await removeLineItemApi(cart.id, lineItemId);
-        setCart(updated);
-      } catch (err) {
-        console.error("Failed to remove item:", err);
-      }
+      // Optimistic remove
+      setCart((prev) => {
+        if (!prev) return prev;
+        return {
+          ...prev,
+          items: (prev.items ?? []).filter((it) => it.id !== lineItemId),
+        } as HttpTypes.StoreCart;
+      });
+      startTransition(async () => {
+        await deleteLineItemAction(lineItemId);
+        await refreshCart();
+      });
     },
-    [cart]
+    [refreshCart]
   );
 
   const itemCount = useMemo(() => {
@@ -121,7 +122,7 @@ export function CartProvider({
   const value = useMemo<CartContextValue>(
     () => ({
       cart,
-      loading,
+      loading: false,
       adding,
       itemCount,
       subtotal,
@@ -134,7 +135,6 @@ export function CartProvider({
     }),
     [
       cart,
-      loading,
       adding,
       itemCount,
       subtotal,

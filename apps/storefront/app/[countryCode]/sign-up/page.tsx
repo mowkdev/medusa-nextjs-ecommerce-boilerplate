@@ -1,14 +1,25 @@
-import LocalizedLink from "@/components/localized-link";
+import { redirect } from "next/navigation";
 
+import LocalizedLink from "@/components/localized-link";
 import { Footer } from "@/components/footer";
 import { Header } from "@/components/header";
 import { SignUpForm } from "@/components/sign-up-form";
+import { retrieveCustomer } from "@/lib/data/customer";
 
 export const metadata = {
   title: "Create account — Dabasberns",
 };
 
-export default function SignUpPage() {
+export default async function SignUpPage({
+  params,
+}: {
+  params: Promise<{ countryCode: string }>;
+}) {
+  const { countryCode } = await params;
+  const customer = await retrieveCustomer();
+  if (customer) {
+    redirect(`/${countryCode}/account`);
+  }
   return (
     <>
       <Header solid />
@@ -29,7 +40,7 @@ export default function SignUpPage() {
             </p>
           </div>
 
-          <SignUpForm />
+          <SignUpForm countryCode={countryCode} />
 
           <p className="auth-fine">
             By creating an account you agree to our{" "}

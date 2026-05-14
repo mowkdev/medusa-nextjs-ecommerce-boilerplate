@@ -45,8 +45,40 @@ export default async function ProductPage({
   const specs: { k: string; v: string; small: string }[] =
     metaRecord?.specs ?? [];
 
+  const price = getCheapestProductPrice(product);
+  const siteUrl =
+    process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") ??
+    "https://dabasberns.lv";
+  const productLd = {
+    "@context": "https://schema.org/",
+    "@type": "Product",
+    name: product.title,
+    description: product.description ?? product.subtitle ?? undefined,
+    image: (product.images ?? []).map((i) => i.url).filter(Boolean),
+    sku: product.variants?.[0]?.sku ?? product.id,
+    brand: { "@type": "Brand", name: "Dabasberns" },
+    offers: price
+      ? {
+          "@type": "Offer",
+          url: `${siteUrl}/${countryCode}/products/${product.handle}`,
+          priceCurrency: price.currency_code?.toUpperCase(),
+          price: price.calculated_amount,
+          availability:
+            (product.variants ?? []).some(
+              (v) => (v.inventory_quantity ?? 0) > 0
+            )
+              ? "https://schema.org/InStock"
+              : "https://schema.org/OutOfStock",
+        }
+      : undefined,
+  };
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(productLd) }}
+      />
       <Header solid />
       <main className="shop" data-screen-label={`Product — ${product.title}`}>
         <div className="crumb">

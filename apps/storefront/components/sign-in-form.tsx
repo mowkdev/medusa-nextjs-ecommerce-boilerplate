@@ -2,6 +2,8 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 
 import { GoogleButton } from "@/components/google-button";
@@ -15,11 +17,13 @@ import {
   FormRow,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useSignIn } from "@/hooks/use-auth";
+import { login } from "@/lib/data/customer";
 import { signInSchema, type SignInValues } from "@/lib/auth-schemas";
 
-export function SignInForm() {
-  const { submit, signInWithGoogle, status, error } = useSignIn();
+export function SignInForm({ countryCode }: { countryCode: string }) {
+  const router = useRouter();
+  const [pending, startTransition] = useTransition();
+  const [error, setError] = useState<string | null>(null);
 
   const form = useForm<SignInValues>({
     resolver: zodResolver(signInSchema),
@@ -27,31 +31,25 @@ export function SignInForm() {
     mode: "onTouched",
   });
 
-  const onSubmit = async (values: SignInValues) => {
-    const result = await submit(values);
-    if (!result.ok && result.field) {
-      form.setError(result.field as "email" | "password", { message: result.error });
-    }
+  const onSubmit = (values: SignInValues) => {
+    setError(null);
+    startTransition(async () => {
+      const formData = new FormData();
+      formData.set("email", values.email);
+      formData.set("password", values.password);
+      const result = await login(null, formData);
+      if (typeof result === "string" && result) {
+        setError(humanize(result));
+        return;
+      }
+      router.push(`/${countryCode}/account`);
+      router.refresh();
+    });
   };
-
-  const submitting = status === "submitting";
-
-  if (status === "success") {
-    return (
-      <p className="text-[14px] text-[var(--ink-soft)] leading-[1.6]">
-        Signed in (demo). Wire <code>useSignIn().submit</code> to your real
-        auth provider — the schema, validation and form state stay as-is.
-      </p>
-    );
-  }
 
   return (
     <>
-      <GoogleButton
-        label="Continue with Google"
-        onClick={signInWithGoogle}
-        disabled={submitting}
-      />
+      <GoogleButton label="Continue with Google" disabled={pending} />
 
       <div className="auth-divider" role="separator">
         or
@@ -92,7 +90,7 @@ export function SignInForm() {
               <FormItem>
                 <FormRow>
                   <FormLabel>Password</FormLabel>
-                  <Link href="#" className="link-mini">
+                  <Link href={`/${countryCode}/forgot-password`} className="link-mini">
                     Forgot?
                   </Link>
                 </FormRow>
@@ -113,12 +111,19 @@ export function SignInForm() {
             <p className="text-[12px] text-[var(--accent-deep)]">{error}</p>
           )}
 
-          <button type="submit" className="auth-cta" disabled={submitting}>
-            <span>{submitting ? "Signing in…" : "Sign in"}</span>
+          <button type="submit" className="auth-cta" disabled={pending}>
+            <span>{pending ? "Signing in…" : "Sign in"}</span>
             <span>→</span>
           </button>
         </form>
       </Form>
     </>
   );
+}
+
+function humanize(raw: string): string {
+  return raw
+    .replace(/^Error:\s*/i, "")
+    .replace(/\.$/, "")
+    .trim();
 }

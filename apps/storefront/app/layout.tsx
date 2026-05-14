@@ -6,6 +6,7 @@ import "./globals.css";
 import { MobileMenuProvider } from "@/components/mobile-menu";
 import { ThemeProvider, themeNoFlashScript } from "@/components/theme-provider";
 import { SmoothScrollProvider } from "@/components/smooth-scroll";
+import { ToastProvider } from "@/components/ui/toast";
 import { siteConfig } from "@/config/site";
 
 const inter = Inter({
@@ -60,9 +61,11 @@ export default function RootLayout({
       </head>
       <body>
         <ThemeProvider>
-          <MobileMenuProvider>
-            <SmoothScrollProvider>{children}</SmoothScrollProvider>
-          </MobileMenuProvider>
+          <ToastProvider>
+            <MobileMenuProvider>
+              <SmoothScrollProvider>{children}</SmoothScrollProvider>
+            </MobileMenuProvider>
+          </ToastProvider>
         </ThemeProvider>
       </body>
     </html>

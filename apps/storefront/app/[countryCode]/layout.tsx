@@ -2,7 +2,8 @@ import { notFound } from "next/navigation";
 
 import { CartUiProvider } from "@/components/cart-panel";
 import { CartProvider } from "@/components/cart-provider";
-import { getRegion } from "@/lib/data/regions";
+import { retrieveCart } from "@/lib/data/cart";
+import { getRegion } from "@/lib/data/regions"; 
 
 export default async function CountryLayout({
   children,
@@ -18,8 +19,10 @@ export default async function CountryLayout({
     notFound();
   }
 
+  const cart = await retrieveCart().catch(() => null);
+
   return (
-    <CartProvider regionId={region.id} countryCode={countryCode}>
+    <CartProvider initialCart={cart} countryCode={countryCode}>
       <CartUiProvider>{children}</CartUiProvider>
     </CartProvider>
   );

@@ -1,6 +1,8 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
+import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 
 import { GoogleButton } from "@/components/google-button";
@@ -14,44 +16,49 @@ import {
   FormRow,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useSignUp } from "@/hooks/use-auth";
+import { signup } from "@/lib/data/customer";
 import { signUpSchema, type SignUpValues } from "@/lib/auth-schemas";
 
-export function SignUpForm() {
-  const { submit, signUpWithGoogle, status, error } = useSignUp();
+export function SignUpForm({ countryCode }: { countryCode: string }) {
+  const router = useRouter();
+  const [pending, startTransition] = useTransition();
+  const [error, setError] = useState<string | null>(null);
 
   const form = useForm<SignUpValues>({
     resolver: zodResolver(signUpSchema),
-    defaultValues: { name: "", email: "", password: "" },
+    defaultValues: {
+      first_name: "",
+      last_name: "",
+      email: "",
+      phone: "",
+      password: "",
+    },
     mode: "onTouched",
   });
 
-  const onSubmit = async (values: SignUpValues) => {
-    const result = await submit(values);
-    if (!result.ok && result.field) {
-      form.setError(result.field, { message: result.error });
-    }
+  const onSubmit = (values: SignUpValues) => {
+    setError(null);
+    startTransition(async () => {
+      const formData = new FormData();
+      formData.set("first_name", values.first_name);
+      formData.set("last_name", values.last_name);
+      formData.set("email", values.email);
+      if (values.phone) formData.set("phone", values.phone);
+      formData.set("password", values.password);
+
+      const result = await signup(null, formData);
+      if (typeof result === "string") {
+        setError(humanize(result));
+        return;
+      }
+      router.push(`/${countryCode}/account`);
+      router.refresh();
+    });
   };
-
-  const submitting = status === "submitting";
-
-  if (status === "success") {
-    return (
-      <p className="text-[14px] text-[var(--ink-soft)] leading-[1.6]">
-        Account created (demo). Wire <code>useSignUp().submit</code> to your
-        real auth provider — the schema, validation and form state stay
-        as-is.
-      </p>
-    );
-  }
 
   return (
     <>
-      <GoogleButton
-        label="Sign up with Google"
-        onClick={signUpWithGoogle}
-        disabled={submitting}
-      />
+      <GoogleButton label="Sign up with Google" disabled={pending} />
 
       <div className="auth-divider" role="separator">
         or
@@ -63,26 +70,48 @@ export function SignUpForm() {
           onSubmit={form.handleSubmit(onSubmit)}
           noValidate
         >
-          <FormField
-            control={form.control}
-            name="name"
-            render={({ field }) => (
-              <FormItem>
-                <FormRow>
-                  <FormLabel>Name</FormLabel>
-                </FormRow>
-                <FormControl>
-                  <Input
-                    type="text"
-                    autoComplete="name"
-                    placeholder="Jānis"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          <div className="grid grid-cols-2 gap-4">
+            <FormField
+              control={form.control}
+              name="first_name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormRow>
+                    <FormLabel>First name</FormLabel>
+                  </FormRow>
+                  <FormControl>
+                    <Input
+                      type="text"
+                      autoComplete="given-name"
+                      placeholder="Jānis"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="last_name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormRow>
+                    <FormLabel>Last name</FormLabel>
+                  </FormRow>
+                  <FormControl>
+                    <Input
+                      type="text"
+                      autoComplete="family-name"
+                      placeholder="Bērziņš"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
 
           <FormField
             control={form.control}
@@ -98,6 +127,27 @@ export function SignUpForm() {
                     autoComplete="email"
                     inputMode="email"
                     placeholder="you@kurzeme.lv"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="phone"
+            render={({ field }) => (
+              <FormItem>
+                <FormRow>
+                  <FormLabel>Phone (optional)</FormLabel>
+                </FormRow>
+                <FormControl>
+                  <Input
+                    type="tel"
+                    autoComplete="tel"
+                    placeholder="+371 …"
                     {...field}
                   />
                 </FormControl>
@@ -131,12 +181,19 @@ export function SignUpForm() {
             <p className="text-[12px] text-[var(--accent-deep)]">{error}</p>
           )}
 
-          <button type="submit" className="auth-cta" disabled={submitting}>
-            <span>{submitting ? "Creating…" : "Create account"}</span>
+          <button type="submit" className="auth-cta" disabled={pending}>
+            <span>{pending ? "Creating…" : "Create account"}</span>
             <span>→</span>
           </button>
         </form>
       </Form>
     </>
   );
+}
+
+function humanize(raw: string): string {
+  return raw
+    .replace(/^Error:\s*/i, "")
+    .replace(/\.$/, "")
+    .trim();
 }

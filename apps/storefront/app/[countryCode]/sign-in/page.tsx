@@ -1,14 +1,26 @@
-import LocalizedLink from "@/components/localized-link";
+import { redirect } from "next/navigation";
 
+import LocalizedLink from "@/components/localized-link";
 import { Footer } from "@/components/footer";
 import { Header } from "@/components/header";
 import { SignInForm } from "@/components/sign-in-form";
+import { retrieveCustomer } from "@/lib/data/customer";
 
 export const metadata = {
   title: "Sign in — Dabasberns",
 };
 
-export default function SignInPage() {
+export default async function SignInPage({
+  params,
+}: {
+  params: Promise<{ countryCode: string }>;
+}) {
+  const { countryCode } = await params;
+  const customer = await retrieveCustomer();
+  if (customer) {
+    redirect(`/${countryCode}/account`);
+  }
+
   return (
     <>
       <Header solid />
@@ -28,7 +40,7 @@ export default function SignInPage() {
             </p>
           </div>
 
-          <SignInForm />
+          <SignInForm countryCode={countryCode} />
 
           <div className="auth-foot">
             New to Dabasberns?{" "}

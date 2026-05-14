@@ -130,7 +130,7 @@ export function Header({ solid = false }: { solid?: boolean }) {
       <div className="nav-actions inline-flex items-center gap-2.5">
         <ThemeToggle />
         <LocalizedLink
-          href="/sign-in"
+          href="/account"
           className="icon-btn"
           aria-label="Account"
           style={{ color: "inherit" }}
