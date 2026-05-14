@@ -1267,7 +1267,7 @@ html.lenis body {
   .auth-form {
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 18px;
   }
   .auth-field {
     display: flex;
@@ -1285,14 +1285,15 @@ html.lenis body {
     text-transform: uppercase;
     color: var(--ink-soft);
   }
-  .auth-field .link-mini {
+  .link-mini {
     font-size: 11px;
     letter-spacing: 0.18em;
     text-transform: uppercase;
     color: var(--accent-deep);
     text-decoration: none;
+    transition: color 160ms ease;
   }
-  .auth-field .link-mini:hover {
+  .link-mini:hover {
     color: var(--accent);
   }
   .auth-field input {
@@ -1338,13 +1339,13 @@ html.lenis body {
     letter-spacing: 0.24em;
     text-transform: uppercase;
     cursor: pointer;
-    padding: 0 24px;
+    padding: 0 22px;
     display: inline-flex;
     align-items: center;
     justify-content: space-between;
     gap: 12px;
     transition: background-color 160ms ease;
-    margin-top: 6px;
+    margin-top: 10px;
   }
   .auth-cta:hover {
     background-color: var(--accent-deep);
