@@ -1,19 +1,31 @@
 "use client";
 
+import { cn } from "@/lib/utils";
 import LocalizedLink from "@/components/localized-link";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { useCartUi } from "@/components/cart-panel";
+
+export type MinimalShellVariant = "checkout" | "account";
 
 export function CheckoutHeader({
-  centerLabel = "Your bench",
+  variant = "checkout",
+  centerLabel,
   backHref = "/products",
   backLabel = "Continue shopping",
 }: {
+  variant?: MinimalShellVariant;
   centerLabel?: string;
   backHref?: string;
   backLabel?: string;
 }) {
+  const resolvedCenter =
+    centerLabel ?? (variant === "account" ? "Account" : "Your bench");
+
   return (
-    <header className="nav-checkout" data-screen-label="Nav">
+    <header
+      className={cn("nav-checkout", variant === "account" && "nav-account")}
+      data-screen-label="Nav"
+    >
       <div className="left">
         <LocalizedLink
           href="/"
@@ -36,45 +48,78 @@ export function CheckoutHeader({
           {backLabel}
         </LocalizedLink>
       </div>
-      <div className="center">{centerLabel}</div>
+      <div className="center">{resolvedCenter}</div>
       <div className="right">
-        <span className="secure">
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth={1.6}
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <rect x="4" y="10" width="16" height="10" rx="2" />
-            <path d="M8 10V7a4 4 0 0 1 8 0v3" />
-          </svg>
-          Secure cart
-        </span>
-        <LocalizedLink href="/account" className="help">
-          Help?
-        </LocalizedLink>
-        <ThemeToggle />
-        <LocalizedLink
-          href="/account"
-          className="icon-btn"
-          aria-label="Account"
-        >
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth={1.5}
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <circle cx="12" cy="8" r="3.5" />
-            <path d="M5 20c1.2-3.5 4.1-5.5 7-5.5s5.8 2 7 5.5" />
-          </svg>
-        </LocalizedLink>
+        {variant === "checkout" ? (
+          <>
+            <span className="secure">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth={1.6}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <rect x="4" y="10" width="16" height="10" rx="2" />
+                <path d="M8 10V7a4 4 0 0 1 8 0v3" />
+              </svg>
+              Secure cart
+            </span>
+            <LocalizedLink href="/account" className="help">
+              Help?
+            </LocalizedLink>
+            <ThemeToggle />
+            <LocalizedLink
+              href="/account"
+              className="icon-btn"
+              aria-label="Account"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth={1.5}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <circle cx="12" cy="8" r="3.5" />
+                <path d="M5 20c1.2-3.5 4.1-5.5 7-5.5s5.8 2 7 5.5" />
+              </svg>
+            </LocalizedLink>
+          </>
+        ) : (
+          <>
+            <ThemeToggle />
+            <CartIconButton />
+          </>
+        )}
       </div>
     </header>
+  );
+}
+
+function CartIconButton() {
+  const { open } = useCartUi();
+  return (
+    <button
+      type="button"
+      className="icon-btn"
+      aria-label="Cart"
+      onClick={open}
+    >
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth={1.5}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <path d="M5 6h14l-1.4 11.2A2 2 0 0 1 15.6 19H8.4a2 2 0 0 1-2-1.8L5 6z" />
+        <path d="M9 6V4.5a3 3 0 0 1 6 0V6" />
+      </svg>
+    </button>
   );
 }
 
@@ -94,5 +139,21 @@ export function CheckoutFooter() {
         <LocalizedLink href="/account">Terms</LocalizedLink>
       </nav>
     </footer>
+  );
+}
+
+export function MinimalShell({
+  variant = "checkout",
+  children,
+}: {
+  variant?: MinimalShellVariant;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="checkout-shell">
+      <CheckoutHeader variant={variant} />
+      <div className="checkout-shell-body">{children}</div>
+      <CheckoutFooter />
+    </div>
   );
 }

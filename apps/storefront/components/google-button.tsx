@@ -41,7 +41,7 @@ export function GoogleButton({ label, onClick, disabled }: GoogleButtonProps) {
   return (
     <button
       type="button"
-      className="btn-google w-full"
+      className="oauth"
       onClick={handleClick}
       disabled={disabled}
     >

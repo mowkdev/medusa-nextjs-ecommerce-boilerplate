@@ -60,8 +60,8 @@ export function SignUpForm({ countryCode }: { countryCode: string }) {
     <>
       <GoogleButton label="Sign up with Google" disabled={pending} />
 
-      <div className="auth-divider" role="separator">
-        or
+      <div className="or-divider" role="separator">
+        Or
       </div>
 
       <Form {...form}>
@@ -70,7 +70,7 @@ export function SignUpForm({ countryCode }: { countryCode: string }) {
           onSubmit={form.handleSubmit(onSubmit)}
           noValidate
         >
-          <div className="grid grid-cols-2 gap-4">
+          <div className="field-row">
             <FormField
               control={form.control}
               name="first_name"
@@ -181,9 +181,9 @@ export function SignUpForm({ countryCode }: { countryCode: string }) {
             <p className="text-[12px] text-[var(--accent-deep)]">{error}</p>
           )}
 
-          <button type="submit" className="auth-cta" disabled={pending}>
+          <button type="submit" className="btn-primary" disabled={pending}>
             <span>{pending ? "Creating…" : "Create account"}</span>
-            <span>→</span>
+            <span className="arr">→</span>
           </button>
         </form>
       </Form>

@@ -62,3 +62,23 @@ export const resetPasswordSchema = z
     message: "Passwords do not match",
   });
 export type ResetPasswordValues = z.infer<typeof resetPasswordSchema>;
+
+export const profileSchema = z.object({
+  first_name: z
+    .string()
+    .trim()
+    .min(1, { message: "First name is required" })
+    .max(60, { message: "Too long" }),
+  last_name: z
+    .string()
+    .trim()
+    .min(1, { message: "Last name is required" })
+    .max(60, { message: "Too long" }),
+  phone: z
+    .string()
+    .trim()
+    .max(40, { message: "Too long" })
+    .optional()
+    .or(z.literal("")),
+});
+export type ProfileValues = z.infer<typeof profileSchema>;

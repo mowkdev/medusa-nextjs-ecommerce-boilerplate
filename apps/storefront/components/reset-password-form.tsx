@@ -109,9 +109,9 @@ export function ResetPasswordForm({
           <p className="text-[12px] text-[var(--accent-deep)]">{error}</p>
         )}
 
-        <button type="submit" className="auth-cta" disabled={pending}>
+        <button type="submit" className="btn-primary" disabled={pending}>
           <span>{pending ? "Saving…" : "Reset password"}</span>
-          <span>→</span>
+          <span className="arr">→</span>
         </button>
       </form>
     </Form>

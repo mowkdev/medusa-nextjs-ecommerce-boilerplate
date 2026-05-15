@@ -51,8 +51,8 @@ export function SignInForm({ countryCode }: { countryCode: string }) {
     <>
       <GoogleButton label="Continue with Google" disabled={pending} />
 
-      <div className="auth-divider" role="separator">
-        or
+      <div className="or-divider" role="separator">
+        Or
       </div>
 
       <Form {...form}>
@@ -111,9 +111,9 @@ export function SignInForm({ countryCode }: { countryCode: string }) {
             <p className="text-[12px] text-[var(--accent-deep)]">{error}</p>
           )}
 
-          <button type="submit" className="auth-cta" disabled={pending}>
+          <button type="submit" className="btn-primary" disabled={pending}>
             <span>{pending ? "Signing in…" : "Sign in"}</span>
-            <span>→</span>
+            <span className="arr">→</span>
           </button>
         </form>
       </Form>

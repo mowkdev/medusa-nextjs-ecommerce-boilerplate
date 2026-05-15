@@ -1,112 +1,112 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useTransition } from "react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
 import { HttpTypes } from "@medusajs/types";
 
-import { Input } from "@/components/ui/input";
+import { ControlledField, FieldShell } from "@/components/checkout/shared/field";
+import { useToast } from "@/components/ui/toast";
 import { updateCustomer } from "@/lib/data/customer";
+import { profileSchema, type ProfileValues } from "@/lib/auth-schemas";
 
-export function ProfileForm({ customer }: { customer: HttpTypes.StoreCustomer }) {
+export function ProfileForm({
+  customer,
+}: {
+  customer: HttpTypes.StoreCustomer;
+}) {
   const [pending, startTransition] = useTransition();
-  const [feedback, setFeedback] = useState<{ ok: boolean; msg: string } | null>(
-    null
-  );
+  const { success, error: toastError } = useToast();
 
-  const submit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setFeedback(null);
-    const fd = new FormData(e.currentTarget);
-    const body: HttpTypes.StoreUpdateCustomer = {
-      first_name: (fd.get("first_name") as string) || undefined,
-      last_name: (fd.get("last_name") as string) || undefined,
-      phone: (fd.get("phone") as string) || undefined,
-    };
+  const form = useForm<ProfileValues>({
+    resolver: zodResolver(profileSchema),
+    defaultValues: {
+      first_name: customer.first_name ?? "",
+      last_name: customer.last_name ?? "",
+      phone: customer.phone ?? "",
+    },
+    mode: "onTouched",
+  });
+
+  const onSubmit = (values: ProfileValues) => {
     startTransition(async () => {
       try {
-        await updateCustomer(body);
-        setFeedback({ ok: true, msg: "Saved" });
-      } catch (err) {
-        setFeedback({
-          ok: false,
-          msg: err instanceof Error ? err.message : "Could not save",
+        await updateCustomer({
+          first_name: values.first_name,
+          last_name: values.last_name,
+          phone: values.phone?.trim() ? values.phone.trim() : undefined,
         });
+        success("Profile updated");
+        form.reset(values);
+      } catch (e) {
+        toastError(e instanceof Error ? e.message : "Could not save profile");
       }
     });
   };
 
   return (
     <form
-      onSubmit={submit}
-      style={{ display: "flex", flexDirection: "column", gap: 18 }}
+      className="profile-form"
+      onSubmit={form.handleSubmit(onSubmit)}
+      noValidate
     >
-      <Field label="First name">
-        <Input
+      <div className="field-row">
+        <ControlledField
+          control={form.control}
           name="first_name"
-          defaultValue={customer.first_name ?? ""}
-          autoComplete="given-name"
+          label="First name"
+          inputProps={{
+            type: "text",
+            autoComplete: "given-name",
+            placeholder: "Jānis",
+          }}
         />
-      </Field>
-      <Field label="Last name">
-        <Input
+        <ControlledField
+          control={form.control}
           name="last_name"
-          defaultValue={customer.last_name ?? ""}
-          autoComplete="family-name"
-        />
-      </Field>
-      <Field label="Email">
-        <Input value={customer.email} disabled />
-        <span
-          style={{
-            fontSize: 11,
-            color: "var(--ink-soft)",
-            marginTop: -2,
+          label="Last name"
+          inputProps={{
+            type: "text",
+            autoComplete: "family-name",
+            placeholder: "Bērziņš",
           }}
-        >
-          Contact us to change the email on your account.
+        />
+      </div>
+
+      <FieldShell label="Email" htmlFor="profile-email">
+        <input
+          id="profile-email"
+          type="email"
+          value={customer.email}
+          autoComplete="email"
+          disabled
+        />
+        <span className="help">
+          <a href="mailto:hello@dabasberns.com">Contact us</a> to change the
+          email on your account.
         </span>
-      </Field>
-      <Field label="Phone">
-        <Input
-          name="phone"
-          type="tel"
-          defaultValue={customer.phone ?? ""}
-          autoComplete="tel"
-        />
-      </Field>
+      </FieldShell>
 
-      {feedback && (
-        <p
-          style={{
-            fontSize: 12,
-            color: feedback.ok ? "var(--accent-deep)" : "var(--accent-deep)",
-          }}
-        >
-          {feedback.msg}
-        </p>
-      )}
+      <ControlledField
+        control={form.control}
+        name="phone"
+        label={
+          <span>
+            Phone{" "}
+            <span className="opt">— optional, for delivery questions</span>
+          </span>
+        }
+        inputProps={{
+          type: "tel",
+          autoComplete: "tel",
+          placeholder: "+371 …",
+        }}
+      />
 
-      <button type="submit" className="auth-cta" disabled={pending}>
+      <button type="submit" className="btn-primary" disabled={pending}>
         <span>{pending ? "Saving…" : "Save changes"}</span>
-        <span>→</span>
+        <span className="arr">→</span>
       </button>
     </form>
-  );
-}
-
-function Field({ label, children }: { label: string; children: React.ReactNode }) {
-  return (
-    <label style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-      <span
-        style={{
-          fontSize: 11,
-          letterSpacing: "0.24em",
-          textTransform: "uppercase",
-          color: "var(--ink-soft)",
-        }}
-      >
-        {label}
-      </span>
-      {children}
-    </label>
   );
 }

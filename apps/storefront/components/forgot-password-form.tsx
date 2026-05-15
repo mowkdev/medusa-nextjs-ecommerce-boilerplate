@@ -84,9 +84,9 @@ export function ForgotPasswordForm() {
           )}
         />
 
-        <button type="submit" className="auth-cta" disabled={pending}>
+        <button type="submit" className="btn-primary" disabled={pending}>
           <span>{pending ? "Sending…" : "Send reset link"}</span>
-          <span>→</span>
+          <span className="arr">→</span>
         </button>
       </form>
     </Form>
