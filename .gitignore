@@ -54,3 +54,8 @@ yarn-error.log*
 ehthumbs.db
 Thumbs.db
 **/.DS_Store
+apps/backend/static/1778771044648-jfishing-medusa-import.csv
+.gitignore
+apps/backend/static/1778771052269-jfishing-medusa-import.csv
+apps/backend/static/1778771063641-jfishing-medusa-import.csv
+apps/backend/static/1778771072648-jfishing-medusa-import.csv

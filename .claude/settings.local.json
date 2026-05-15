@@ -1,7 +1,26 @@
 {
   "permissions": {
     "allow": [
-      "Bash(pnpm exec *)"
+      "Bash(pnpm exec *)",
+      "Bash(mkdir -p /tmp/design-fetch)",
+      "Bash(cp \"C:\\\\Users\\\\SergejsMoskanovs\\\\.claude\\\\projects\\\\C--Users-SergejsMoskanovs-code-lab-medusa-nextjs-ecommerce-boilerplate\\\\ef2cc951-1eec-4254-aae1-cc03c02def88\\\\tool-results\\\\webfetch-1778786351833-ccjjeg.bin\" /tmp/design-fetch/design.tar.gz)",
+      "Read(//tmp/**)",
+      "Bash(tar -tzf design.tar.gz)",
+      "Bash(mkdir -p \"\\(checkout\\)\")",
+      "Bash(mv cart *)",
+      "Bash(mv checkout *)",
+      "Bash(rm 'apps/storefront/app/[countryCode]/\\(checkout\\)/checkout/layout.tsx' && ls 'apps/storefront/app/[countryCode]/\\(checkout\\)/checkout')",
+      "Bash(pnpm install *)",
+      "Read(//c/c/Users/SergejsMoskanovs/code/lab/medusa-nextjs-ecommerce-boilerplate/apps/storefront/components/checkout/**)",
+      "Read(//c/c/Users/SergejsMoskanovs/code/lab/medusa-nextjs-ecommerce-boilerplate/apps/storefront/components/**)",
+      "Bash(npx tsc *)",
+      "Bash(git stash *)",
+      "Bash(gunzip -k design.gz)",
+      "Bash(rm -rf /tmp/design2)",
+      "Bash(mkdir -p /tmp/design2)",
+      "Bash(cp \"C:/Users/SergejsMoskanovs/.claude/projects/C--Users-SergejsMoskanovs-code-lab-medusa-nextjs-ecommerce-boilerplate/3d19ff13-914a-4085-93cb-6b96fb21f087/tool-results/webfetch-1778838617220-l09lgv.bin\" /tmp/design2/d.gz)",
+      "Bash(gunzip d.gz)",
+      "Bash(tar -xf d)"
     ]
   }
 }

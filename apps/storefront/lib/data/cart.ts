@@ -221,77 +221,58 @@ export async function submitPromotionForm(
   }
 }
 
-export async function setAddresses(
-  _state: unknown,
-  formData: FormData
-): Promise<string | undefined> {
-  try {
-    if (!formData) {
-      throw new Error("No form data found when setting addresses");
-    }
-    const cartId = await getCartId();
-    if (!cartId) {
-      throw new Error("No existing cart found when setting addresses");
-    }
+type CartAddressInput = {
+  first_name: string;
+  last_name: string;
+  address_1: string;
+  address_2?: string;
+  company?: string;
+  postal_code: string;
+  city: string;
+  country_code: string;
+  province?: string;
+  phone?: string;
+};
 
-    type CartAddress = {
-      first_name?: string;
-      last_name?: string;
-      address_1?: string;
-      address_2?: string;
-      company?: string;
-      postal_code?: string;
-      city?: string;
-      country_code?: string;
-      province?: string;
-      phone?: string;
-    };
-    const data: HttpTypes.StoreUpdateCart & {
-      shipping_address?: CartAddress;
-      billing_address?: CartAddress;
-      email?: string;
-    } = {
-      shipping_address: {
-        first_name: formData.get("shipping_address.first_name") as string,
-        last_name: formData.get("shipping_address.last_name") as string,
-        address_1: formData.get("shipping_address.address_1") as string,
-        address_2: "",
-        company: (formData.get("shipping_address.company") as string) || "",
-        postal_code: formData.get("shipping_address.postal_code") as string,
-        city: formData.get("shipping_address.city") as string,
-        country_code: formData.get("shipping_address.country_code") as string,
-        province: (formData.get("shipping_address.province") as string) || "",
-        phone: (formData.get("shipping_address.phone") as string) || "",
-      },
-      email: formData.get("email") as string,
-    };
+export type SetAddressesInput = {
+  email: string;
+  shipping_address: CartAddressInput;
+  billing_address?: CartAddressInput;
+  same_as_billing: boolean;
+};
 
-    const sameAsBilling = formData.get("same_as_billing");
-    if (sameAsBilling === "on") {
-      data.billing_address = data.shipping_address;
-    } else {
-      data.billing_address = {
-        first_name: formData.get("billing_address.first_name") as string,
-        last_name: formData.get("billing_address.last_name") as string,
-        address_1: formData.get("billing_address.address_1") as string,
-        address_2: "",
-        company: (formData.get("billing_address.company") as string) || "",
-        postal_code: formData.get("billing_address.postal_code") as string,
-        city: formData.get("billing_address.city") as string,
-        country_code: formData.get("billing_address.country_code") as string,
-        province: (formData.get("billing_address.province") as string) || "",
-        phone: (formData.get("billing_address.phone") as string) || "",
-      };
-    }
-
-    await updateCart(data);
-  } catch (e) {
-    return (e as Error).message;
+export async function setAddresses(input: SetAddressesInput): Promise<void> {
+  const cartId = await getCartId();
+  if (!cartId) {
+    throw new Error("No existing cart found when setting addresses");
   }
 
-  redirect(
-    `/${formData.get("shipping_address.country_code")}/checkout?step=delivery`
-  );
+  const shipping = {
+    first_name: input.shipping_address.first_name,
+    last_name: input.shipping_address.last_name,
+    address_1: input.shipping_address.address_1,
+    address_2: input.shipping_address.address_2 ?? "",
+    company: input.shipping_address.company ?? "",
+    postal_code: input.shipping_address.postal_code,
+    city: input.shipping_address.city,
+    country_code: input.shipping_address.country_code,
+    province: input.shipping_address.province ?? "",
+    phone: input.shipping_address.phone ?? "",
+  };
+
+  const data: HttpTypes.StoreUpdateCart & {
+    shipping_address?: CartAddressInput;
+    billing_address?: CartAddressInput;
+    email?: string;
+  } = {
+    shipping_address: shipping,
+    billing_address: input.same_as_billing
+      ? shipping
+      : input.billing_address ?? shipping,
+    email: input.email,
+  };
+
+  await updateCart(data);
 }
 
 export async function placeOrder(cartId?: string) {

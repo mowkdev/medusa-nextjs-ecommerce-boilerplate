@@ -19,22 +19,35 @@ export function CartView({
   const { cart, currencyCode, subtotal, updateItem, removeItem } = useCart();
 
   const items = cart?.items ?? [];
+  const itemCount = items.reduce((sum, item) => sum + item.quantity, 0);
 
   if (items.length === 0) {
     return (
-      <div className="auth-shell" style={{ maxWidth: 560, textAlign: "center" }}>
-        <div className="auth-head">
-          <span className="eyebrow">Quiet shore</span>
-          <h1>Empty bench</h1>
-          <p className="sub">
-            Nothing on the bench just yet. Browse the rods, reels and quieter
-            things from the workshop.
-          </p>
-        </div>
+      <div className="cart-empty-large">
+        <span className="icon" aria-hidden>
+          <svg
+            viewBox="0 0 24 24"
+            width="22"
+            height="22"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth={1.4}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="M5 7h14l-1.4 11a2 2 0 0 1-2 1.8H8.4a2 2 0 0 1-2-1.8L5 7z" />
+            <path d="M9 7V5.5a3 3 0 0 1 6 0V7" />
+          </svg>
+        </span>
+        <h3>Empty bench</h3>
+        <p>
+          Nothing on the bench just yet. Browse the rods, reels and quieter
+          things from the workshop.
+        </p>
         <LocalizedLink
           href="/products"
-          className="auth-cta"
-          style={{ display: "inline-flex", textDecoration: "none" }}
+          className="cta-checkout"
+          style={{ marginTop: 14, minWidth: 240 }}
         >
           <span>Browse the workshop</span>
           <span>→</span>
@@ -44,42 +57,27 @@ export function CartView({
   }
 
   const goToCheckout = () => router.push(`/${countryCode}/checkout`);
+  const promoCodes = (cart?.promotions ?? []).map((p) => p.code ?? "");
 
   return (
-    <div className="pdp" style={{ padding: "16px var(--pad) 96px" }}>
-      <div
-        className="grid items-start"
-        style={{
-          display: "grid",
-          gridTemplateColumns: "minmax(0, 1.4fr) minmax(320px, 1fr)",
-          gap: 56,
-        }}
-      >
-        <section>
-          <h1
-            style={{
-              fontFamily: "var(--font-display)",
-              fontWeight: 400,
-              fontSize: "clamp(40px, 5vw, 64px)",
-              letterSpacing: "0.06em",
-              textTransform: "uppercase",
-              lineHeight: 1,
-              margin: "8px 0 24px",
-            }}
-          >
-            Your bench
-          </h1>
+    <>
+      <header className="shop-head">
+        <div>
+          <span className="eyebrow">
+            {itemCount} {itemCount === 1 ? "item" : "items"} on the bench
+          </span>
+          <h1>Your bench</h1>
+        </div>
+        <p className="lede">
+          Take a last look before we wrap things. Items stay here for 7 days.
+          Shipping is calculated at checkout once we know where you&apos;re
+          casting from.
+        </p>
+      </header>
 
-          <ul
-            style={{
-              listStyle: "none",
-              padding: 0,
-              margin: 0,
-              display: "flex",
-              flexDirection: "column",
-              borderTop: "1px solid color-mix(in srgb, var(--ink) 12%, transparent)",
-            }}
-          >
+      <div className="cart-layout">
+        <section className="cart-items-col">
+          <div className="cart-items-list">
             {items.map((item) => (
               <LineRow
                 key={item.id}
@@ -94,132 +92,128 @@ export function CartView({
                 onRemove={() => removeItem(item.id)}
               />
             ))}
-          </ul>
+          </div>
 
-          <div style={{ marginTop: 28 }}>
-            <LocalizedLink
-              href="/products"
-              className="link-mini"
-              style={{ color: "var(--ink-soft)" }}
-            >
-              ← Keep browsing
+          <div className="cart-foot">
+            <LocalizedLink href="/products" className="keep">
+              <span>←</span> Keep browsing
             </LocalizedLink>
+            {cart?.shipping_address?.city && (
+              <span className="est">
+                Ships from Kuldīga, LV · to {cart.shipping_address.city}
+              </span>
+            )}
           </div>
         </section>
 
-        <aside
-          style={{
-            position: "sticky",
-            top: 96,
-            background: "var(--paper-2)",
-            padding: 28,
-            borderRadius: 6,
-          }}
-        >
-          <span
-            style={{
-              fontSize: 11,
-              letterSpacing: "0.28em",
-              textTransform: "uppercase",
-              color: "var(--accent-deep)",
-            }}
-          >
-            — Summary
-          </span>
-
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              gap: 12,
-              marginTop: 18,
-              paddingBottom: 18,
-              borderBottom:
-                "1px solid color-mix(in srgb, var(--ink) 12%, transparent)",
-            }}
-          >
-            <Row k="Subtotal" v={subtotal} />
-            <Row k="Shipping" v="Calculated next" muted />
-            {!!cart?.discount_total && cart.discount_total > 0 && (
-              <Row
-                k="Discount"
-                v={`− ${formatPrice(cart.discount_total, currencyCode)}`}
-              />
-            )}
+        <aside className="summary" aria-label="Order summary">
+          <div className="head">
+            <span className="eb">Summary</span>
           </div>
 
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "baseline",
-              padding: "18px 0",
-              fontFamily: "var(--font-display)",
-              textTransform: "uppercase",
-              letterSpacing: "0.06em",
-            }}
-          >
-            <span style={{ fontSize: 13 }}>Total</span>
-            <span style={{ fontSize: 22 }}>
-              {formatPrice(cart?.total ?? cart?.item_subtotal ?? 0, currencyCode)}
+          <div className="row">
+            <span className="k">
+              Subtotal · {itemCount} {itemCount === 1 ? "item" : "items"}
+            </span>
+            <span className="v">{subtotal}</span>
+          </div>
+          <div className="row">
+            <span className="k">Shipping</span>
+            <span className="v muted">Calculated next</span>
+          </div>
+          <div className="row">
+            <span className="k">Estimated tax</span>
+            <span className="v muted">Calculated next</span>
+          </div>
+          {!!cart?.discount_total && cart.discount_total > 0 && (
+            <div className="row">
+              <span className="k">Discount</span>
+              <span className="v">
+                − {formatPrice(cart.discount_total, currencyCode)}
+              </span>
+            </div>
+          )}
+
+          <div className="row total">
+            <span className="k">Total</span>
+            <span className="v">
+              {formatPrice(
+                cart?.total ?? cart?.item_subtotal ?? 0,
+                currencyCode
+              )}
             </span>
           </div>
 
-          <PromoForm currentCodes={(cart?.promotions ?? []).map((p) => p.code ?? "")} />
+          <PromoForm currentCodes={promoCodes} />
 
           <button
             type="button"
-            className="auth-cta"
-            style={{ width: "100%", marginTop: 18 }}
+            className="cta-checkout"
             onClick={goToCheckout}
           >
             <span>Go to checkout</span>
             <span>→</span>
           </button>
 
-          <p
-            style={{
-              marginTop: 12,
-              fontSize: 11,
-              color: "var(--ink-soft)",
-              lineHeight: 1.55,
-            }}
-          >
+          <p className="signin-hint">
             {customerEmail ? (
               <>Signed in as {customerEmail}.</>
             ) : (
               <>
                 Have an account?{" "}
-                <LocalizedLink
-                  href="/sign-in"
-                  className="link-mini"
-                  style={{ color: "var(--ink)" }}
-                >
-                  Sign in
-                </LocalizedLink>{" "}
-                to use saved addresses.
+                <LocalizedLink href="/sign-in">Sign in</LocalizedLink> to use
+                saved addresses.
               </>
             )}
           </p>
+
+          <div className="reassure">
+            <div className="r">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth={1.5}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M12 3l8 4v5c0 5-3.5 8.5-8 9-4.5-.5-8-4-8-9V7l8-4z" />
+              </svg>
+              Secure SSL · Stripe + PayPal
+            </div>
+            <div className="r">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth={1.5}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M3 7h13l2 4h3v5h-2" />
+                <circle cx="7" cy="17" r="2" />
+                <circle cx="17" cy="17" r="2" />
+              </svg>
+              Free returns within 30 days
+            </div>
+            <div className="r">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth={1.5}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M12 6v6l4 2" />
+                <circle cx="12" cy="12" r="9" />
+              </svg>
+              Hand-cast &amp; signed before shipping
+            </div>
+          </div>
         </aside>
       </div>
-    </div>
-  );
-}
-
-function Row({ k, v, muted }: { k: string; v: string; muted?: boolean }) {
-  return (
-    <div
-      style={{
-        display: "flex",
-        justifyContent: "space-between",
-        fontSize: 13,
-        color: muted ? "var(--ink-soft)" : "var(--ink)",
-      }}
-    >
-      <span>{k}</span>
-      <span>{v}</span>
-    </div>
+    </>
   );
 }
 
@@ -241,83 +235,31 @@ function LineRow({
     item.variant_title && item.variant_title !== "Default"
       ? item.variant_title
       : null;
+  const productHref = `/products/${item.product_handle ?? "#"}`;
   const lineTotal = formatPrice(
     item.total ?? (item.unit_price ?? 0) * item.quantity,
     currencyCode
   );
+  const unitPrice = formatPrice(item.unit_price ?? 0, currencyCode);
 
   return (
-    <li
-      style={{
-        display: "grid",
-        gridTemplateColumns: "120px 1fr auto",
-        gap: 20,
-        padding: "22px 0",
-        borderBottom:
-          "1px solid color-mix(in srgb, var(--ink) 12%, transparent)",
-        alignItems: "center",
-      }}
-    >
-      <LocalizedLink
-        href={`/products/${item.product_handle ?? "#"}`}
-        style={{
-          width: 120,
-          height: 120,
-          background: "var(--paper-2)",
-          borderRadius: 6,
-          overflow: "hidden",
-          display: "block",
-          position: "relative",
-        }}
-        aria-label={title}
-      >
+    <article className="line-item">
+      <LocalizedLink href={productHref} className="thumb" aria-label={title}>
         {item.thumbnail ? (
-          <img
-            src={item.thumbnail}
-            alt={title}
-            style={{ width: "100%", height: "100%", objectFit: "cover" }}
-          />
+          <img src={item.thumbnail} alt={title} />
         ) : (
-          <div style={{ width: "100%", height: "100%" }} />
+          <span className="ph" />
         )}
+        {item.variant_sku && <span className="lbl">{item.variant_sku}</span>}
       </LocalizedLink>
 
-      <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-        <LocalizedLink
-          href={`/products/${item.product_handle ?? "#"}`}
-          style={{
-            fontFamily: "var(--font-display)",
-            fontSize: 18,
-            letterSpacing: "0.04em",
-            textTransform: "uppercase",
-            color: "var(--ink)",
-            textDecoration: "none",
-            lineHeight: 1.1,
-          }}
-        >
+      <div className="info">
+        <LocalizedLink href={productHref} className="name">
           {title}
         </LocalizedLink>
-        {variantTitle && (
-          <span style={{ fontSize: 12, color: "var(--ink-soft)" }}>
-            {variantTitle}
-          </span>
-        )}
-        {item.variant_sku && (
-          <span
-            style={{
-              fontFamily:
-                "ui-monospace, SFMono-Regular, Menlo, monospace",
-              fontSize: 10,
-              letterSpacing: "0.16em",
-              textTransform: "uppercase",
-              color: "var(--ink-soft)",
-            }}
-          >
-            SKU · {item.variant_sku}
-          </span>
-        )}
-        <div style={{ display: "flex", alignItems: "center", gap: 16, marginTop: 8 }}>
-          <div className="qty-mini">
+        {variantTitle && <span className="variant">{variantTitle}</span>}
+        <div className="controls">
+          <div className="qty">
             <button type="button" aria-label="Decrease" onClick={onDecrease}>
               −
             </button>
@@ -326,33 +268,16 @@ function LineRow({
               +
             </button>
           </div>
-          <button
-            type="button"
-            onClick={onRemove}
-            className="link-mini"
-            style={{
-              background: "none",
-              border: "none",
-              padding: 0,
-              cursor: "pointer",
-              color: "var(--ink-soft)",
-            }}
-          >
+          <button type="button" className="rm" onClick={onRemove}>
             Remove
           </button>
         </div>
       </div>
 
-      <div
-        style={{
-          textAlign: "right",
-          fontFamily: "var(--font-display)",
-          fontSize: 16,
-          letterSpacing: "0.04em",
-        }}
-      >
+      <div className="price-col">
         {lineTotal}
+        {item.quantity > 1 && <span className="each">{unitPrice} each</span>}
       </div>
-    </li>
+    </article>
   );
 }

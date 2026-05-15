@@ -1,18 +1,21 @@
 import LocalizedLink from "@/components/localized-link";
 import { redirect } from "next/navigation";
 
+import { CheckoutFlow } from "@/components/checkout/checkout-flow";
 import { CheckoutSummary } from "@/components/checkout/checkout-summary";
-import { CheckoutForm } from "@/components/checkout/checkout-form";
 import { retrieveCart } from "@/lib/data/cart";
 import { retrieveCustomer } from "@/lib/data/customer";
 import { listCartShippingMethods } from "@/lib/data/fulfillment";
 import { listCartPaymentMethods } from "@/lib/data/payment";
+import {
+  CHECKOUT_STEPS,
+  STEP_LABEL,
+  type CheckoutStep,
+} from "@/lib/checkout/schemas";
 
 export const metadata = {
   title: "Checkout — Dabasberns",
 };
-
-type CheckoutStep = "address" | "delivery" | "payment" | "review";
 
 function inferStep(cart: Awaited<ReturnType<typeof retrieveCart>>): CheckoutStep {
   if (!cart) return "address";
@@ -26,12 +29,16 @@ function inferStep(cart: Awaited<ReturnType<typeof retrieveCart>>): CheckoutStep
   return "review";
 }
 
+function isStep(value: string | undefined): value is CheckoutStep {
+  return !!value && (CHECKOUT_STEPS as readonly string[]).includes(value);
+}
+
 export default async function CheckoutPage({
   params,
   searchParams,
 }: {
   params: Promise<{ countryCode: string }>;
-  searchParams: Promise<{ step?: CheckoutStep }>;
+  searchParams: Promise<{ step?: string }>;
 }) {
   const { countryCode } = await params;
   const { step: stepParam } = await searchParams;
@@ -47,10 +54,13 @@ export default async function CheckoutPage({
     ? (await listCartPaymentMethods(cart.region.id)) ?? []
     : [];
 
-  const step = stepParam ?? inferStep(cart);
+  const initialStep: CheckoutStep = isStep(stepParam)
+    ? stepParam
+    : inferStep(cart);
+  const stepIndex = CHECKOUT_STEPS.indexOf(initialStep);
 
   return (
-    <main className="shop" data-screen-label="Checkout">
+    <main className="shop shop-checkout" data-screen-label="Checkout">
       <div className="crumb">
         <LocalizedLink href="/">Dabasberns</LocalizedLink>
         <span className="sep">/</span>
@@ -59,30 +69,31 @@ export default async function CheckoutPage({
         <span className="now">Checkout</span>
       </div>
 
-      <div
-        className="pdp"
-        style={{
-          padding: "16px var(--pad) 96px",
-        }}
-      >
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "minmax(0, 1.3fr) minmax(340px, 1fr)",
-            gap: 56,
-            alignItems: "start",
-          }}
-        >
-          <CheckoutForm
-            cart={cart}
-            customer={customer}
-            shippingMethods={shipping}
-            paymentProviders={payment}
-            step={step}
-            countryCode={countryCode}
-          />
-          <CheckoutSummary cart={cart} />
+      <header className="shop-head">
+        <div>
+          <span className="eyebrow">
+            Step {String(stepIndex + 1).padStart(2, "0")} of 04 ·{" "}
+            {STEP_LABEL[initialStep]}
+          </span>
+          <h1>Checkout</h1>
         </div>
+        <p className="lede">
+          Address, then delivery, then payment. We don&apos;t store card
+          details — payment is handled by Stripe. Order is reviewed before any
+          charge is made.
+        </p>
+      </header>
+
+      <div className="checkout-layout">
+        <CheckoutFlow
+          cart={cart}
+          customer={customer}
+          shippingMethods={shipping}
+          paymentProviders={payment}
+          countryCode={countryCode}
+          initialStep={initialStep}
+        />
+        <CheckoutSummary cart={cart} />
       </div>
     </main>
   );
